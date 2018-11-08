@@ -1,0 +1,111 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+entity hexer is port( 
+		spdt: in std_logic_vector(0 to 1); --Inits all the ports, all but the spdt are native to the BWYS
+		clk: in std_logic;
+		speed: in std_logic_vector(1 downto 0);
+		ps_scope: out std_logic_vector(7 downto 0);
+		ps_7_seg: out std_logic_vector(7 downto 0);
+		SSEG_AN: inout std_logic_vector(3 downto 0));
+end entity hexer;
+
+architecture hx of hexer is
+	type disp_bufs is array(3 downto 0)  of std_logic_vector(7 downto 0); --Inits the type for the display, ala c structs
+	signal ns: std_logic_vector(7 downto 0); --lots of internal signals, used for stuff we dont need to output
+	signal bx, by: std_logic := '1';
+	signal slowclk, clk_select: std_logic;
+	signal clk_divider: std_logic_vector(27 downto 0);
+	signal ps: std_logic_vector(7 downto 0);
+	signal display: disp_bufs;
+begin
+	process(clk)
+	begin
+		if rising_edge(clk) then
+			clk_divider <= clk_divider + 1;
+		end if;
+	end process;
+	with speed select --select stament to determine the clock speed, 
+		clk_select <= clk_divider(27) when "00",
+					  clk_divider(24) when "01",
+					  clk_divider(21) when "10",
+					  clk_divider(18) when "11";
+		slowclk <= clk_select when rising_edge(clk); --Done to eliminate glitches and the like
+	process(slowclk)
+	begin
+		if rising_edge(slowclk) then
+			ps <= ns; --moves the digits up the line and the newest digit into the display
+			display(0) <= display(1);
+			display(1) <= display(2);
+			display(2) <= display(3);
+			display(3) <= ps;
+		end if;
+	end process;
+	ps_scope <= ps;
+process(ps, by)
+begin
+	case ps is
+		--Count up
+		when x"F9" => ns <= x"A4";
+		when x"A4" => ns <= x"B0";
+		when x"B0" => ns <= x"99";
+		when x"99" => ns <= x"92";
+		when x"92" => ns <= x"82";
+		when x"82" => ns <= x"F8";
+		when x"F8" => ns <= x"80";
+		when x"80" => ns <= x"98";
+		when x"98" => ns <= x"88";
+		when x"88" => ns <= x"83";
+		when x"83" => ns <= x"C6";
+		when x"C6" => ns <= x"A1";
+		when x"A1" => ns <= x"86";
+		when x"86" => ns <= x"8E";
+		when x"8E" => if by = '1' then ns <= x"06"; 
+					  else ns <= x"8E"; end if; --stay stuck at 8E, which is F
+		-- count down
+		when x"40" => if (by = '1') then ns <= x"F9"; else ns <= x"40"; end if;
+		when x"06" => ns <= x"21";
+		when x"21" => ns <= x"46";
+		when x"46" => ns <= x"03";
+		when x"03" => ns <= x"08";
+		when x"08" => ns <= x"18";
+		when x"18" => ns <= x"00";
+		when x"00" => ns <= x"78";
+		when x"78" => ns <= x"02";
+		when x"02" => ns <= x"12";
+		when x"12" => ns <= x"19";
+		when x"19" => ns <= x"30";
+		when x"30" => ns <= x"24";
+		when x"24" => ns <= x"79";
+		when x"79" => ns <= x"40";
+		when others => ns <= x"00";
+	end case;
+end process;
+with spdt select
+	bx <= '1' when "01",
+	      '0' when "10",
+	       bx when others;
+process(clk)
+begin
+    if rising_edge(clk) then
+		case ps is
+			when x"8E" | x"40" => if bx = '1' then by <= '1'; end if;
+			when others => by <= '0';
+		end case;
+	end if;
+end process;
+
+process(clk_divider(10))
+begin
+	if (rising_edge(clk_divider(10))) then
+		case SSEG_AN is
+			when "1110" => SSEG_AN <= "0111"; ps_7_seg <= display(0);
+			when "0111" => SSEG_AN <= "1011"; ps_7_seg <= display(1);
+			when "1011" => SSEG_AN <= "1101"; ps_7_seg <= display(2);
+			when "1101" => SSEG_AN <= "1110"; ps_7_seg <= display(3);
+			when others => SSEG_AN <= "0111"; 
+		end case;
+	end if;
+end process;
+end architecture hx;

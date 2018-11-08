@@ -1,0 +1,39 @@
+entity Prob_5_51 is
+	port(y_out: out std_logic; 
+		 clk, reset_b, x_in: in std_logic);
+end Prob_5_51;
+
+architecture behavioral of Prob_5_51 is
+	constant s0 = '00', s1 = '01', s2 = '10', s3 = '11'; --State constants
+	signal state, next_state, std_logic_vector(1 downto 0); 
+	process(clk, reset_b) 
+		begin
+		if (reset_b'event && reset_b = '0') then state <= s0;
+		else state <=next_state;
+	end process;
+	process(state, x_in) 
+		begin
+		y_out <= 0;
+		next_state<=s0;
+		case state is
+			when s0 =>  y_out<=0; 
+						if x_in = '1' then next_state <= s1; 
+						else next_state <= 0; 
+						end if;
+			when s1 =>  y_out <= '0'; 
+						if x_in = '1' then next_state <= s2; 
+						else next_state <= s1; 
+						end if;
+			when s2 =>  if x_in = '1' then y_out <= 0;
+							next_state <=s3; 
+						else y_out <= '1'; 
+							next_state <= s0; 
+						end if;
+			when s3 =>  y_out <= '1'; 
+						if x_in = '1' then next_state <= s0: 
+						else next_state <= s3; 
+						end if; 
+			when others => next_state <= s0;
+		end case;
+	end process;
+end behavioral;
