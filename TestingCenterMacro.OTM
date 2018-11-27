@@ -1,0 +1,44 @@
+Private WithEvents mainInboxItems As Outlook.Items
+
+Public Sub Application_Startup()
+
+    Dim olApp As Outlook.Application
+    Dim objNS As Outlook.NameSpace
+    Set olApp = Outlook.Application
+    Set objNS = olApp.GetNamespace("MAPI")
+    Set mainInboxItems = objNS.GetDefaultFolder(olFolderInbox).Folders("MacroTest").Items
+End Sub
+
+Private Sub mainInboxItems_ItemAdd(ByVal item As Object)
+    Dim message As Outlook.MailItem
+    Dim reg As RegExp
+    Dim MatchList As MatchCollection
+    Dim M As Match
+    
+    Debug.Print "Found an Item! Subject: " + item.Subject
+    Set reg = New RegExp
+    Set message = item
+    For i = 1 To 2
+    With reg
+        Select Case i
+            Case 1 'test name
+                .Pattern = "Reference #\s*\d*"
+                .Global = False
+                Debug.Print "refrence number"
+            Case 2 'instuctor name
+                .Pattern = "Instructor Name and a CONTACT NUMBER (for urgent questions)*/s[:]*/s*/w*/s*"
+                 .Global = False
+                Debug.Print "Looking for insturctor name"
+        End Select
+    End With
+    Debug.Print reg.Test(message.Body)
+    If reg.Test(message.Body) Then
+        Set MatchList = reg.Execute(message.Body)
+        For Each M In MatchList
+            Debug.Print M.Value
+        Next
+    End If
+Next i
+
+
+End Sub
