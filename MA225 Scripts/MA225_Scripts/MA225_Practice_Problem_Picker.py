@@ -1,8 +1,8 @@
 #Problem Selector for MA225 to aid in studying
 #written by Mark Burrell 10/27/2018
-#Last updated 11/07/2018 and contains up to chapter 5.3
+#Last updated 12/01/2018 and contains up to chapter 8.3
 import random;
-print("MRB10_31_2018")
+print("MRB12_1_2018")
 def probList(maxProblem):
     l = [];
     for i in range(1,maxProblem,2):
@@ -31,7 +31,14 @@ problemDict = {
     "4.8": 22,
     "5.1": 44,
     "5.2": 49,
-    "5.3": 29
+    "5.3": 29, 
+    "6.1": 41,
+    "7.1": 33,
+    "7.3": 37,
+    "7.5": 25,
+    "8.1": 33,
+    "8.2": 25,
+    "8.3": 25
     }
 for i in problemDict:
     problemDict[i] = probList(problemDict[i]);
