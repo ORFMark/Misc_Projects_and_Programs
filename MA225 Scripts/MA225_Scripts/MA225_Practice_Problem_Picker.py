@@ -48,13 +48,15 @@ focusHigh = input("What is the highest section you want to focus on: ")
 while True:
     lowerFocus = list(problemDict.keys()).index(focusLow)
     upperFocus = list(problemDict.keys()).index(focusHigh)
-    c = random.randint(1,4);
-    if c%4 == 0:
-        key = list(problemDict.keys())[random.randint(0,len(problemDict)-1)]
-        prob = problemDict[key][random.randint(0,len(problemDict[key])-1)]
-    else:
-        key = list(problemDict.keys())[random.randint(lowerFocus,upperFocus)]
-        prob = problemDict[key][random.randint(0,len(problemDict[key])-1)]
+##    c = random.randint(1,4);
+##    if c%4 == 0:
+##        key = list(problemDict.keys())[random.randint(0,len(problemDict)-1)]
+##        prob = problemDict[key][random.randint(0,len(problemDict[key])-1)]
+##    else:
+##        key = list(problemDict.keys())[random.randint(lowerFocus,upperFocus)]
+##        prob = problemDict[key][random.randint(0,len(problemDict[key])-1)]
+    key = list(problemDict.keys())[random.randint(lowerFocus,upperFocus)]
+    prob = problemDict[key][random.randint(0,len(problemDict[key])-1)]
     print("Do problem %d in section "%prob + key)
     correct = input("Did you get it right? (Y/N): ")
     if correct == "Y":
