@@ -12,13 +12,14 @@ plt.errorbar(trials, data, yerr = 0.0005, marker = '+', linestyle = '', label = 
 
 #axis labels/title
 plt.xlabel("Trial Number")
-plt.ylabel("Diamater of the Sphere(cm)")
-plt.title("Fig. 5: Diamater of a Steel Sphere with Mean and Standard Deviation")
+plt.ylabel("Diameter of the Sphere(cm)")
+plt.title("Fig. 5: Diameter of a Steel Sphere with Mean and Standard Deviation")
 
 #mean
 plt.plot([0]+trials, [2.5099]*31, c = 'red', marker = '', label = 'Mean')
 
 #std dev
+print(np.std(data))
 plt.plot([0]+trials, [2.5099+np.std(data)]*31, c = 'green', marker = '', label = 'Standard Deviation')
 plt.plot([0]+trials, [2.5099-np.std(data)]*31, c = 'green', marker = '')
 
