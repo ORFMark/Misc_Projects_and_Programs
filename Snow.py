@@ -37,6 +37,7 @@ change=0
 changeDirec=0.4
 roof=False 
 smokeList=[]
+eraser = [];
 for i in range(0,random.randint(15,20)):
     smokeList.append([[470+random.randint(-20,20),570+random.randint(-10,10)],random.randint(5,15)])
 for i in range(0,50):
@@ -55,7 +56,7 @@ def smoke(pos,rise,size):
         pos[1]=random.randint(560,580)
         pos[0]=random.randint(450,490)
         rise=random.randint(-3,-1)
-    pygame.draw.circle(screen,gray,pos,size)
+    eraser.append(pygame.draw.circle(screen,gray,pos,size))
 lightPos=[]
 def drawHouse():
     pygame.draw.rect(screen,lgreen,[300,650,200,150]) ##walls
@@ -85,7 +86,8 @@ def drawHouse():
     #end berries
     
 def drawSnow(posList,size):
-    pygame.draw.circle(screen,white,posList,size)
+    global eraser
+    eraser.append(pygame.draw.circle(screen,white,posList,size))
 def snowFall():
     global count
     countList[i][1]=countList[i][1]+(sizeList[i]/2)
@@ -140,9 +142,11 @@ done=False
 zero=False
 while done==False:
     clock.tick(30)
-    screen.fill(blue)
-    for i in range (0,len(smP)):
-            smoke(smP[i],smV[i],smSize[i])
+    for i in eraser:
+        pygame.draw.rect(screen, blue, i)
+    eraser = []
+    #screen.fill(blue)
+
     for i in range (len(pos_list)):
         if pos_list[i][1]>800:
             snowFall()
@@ -151,7 +155,7 @@ while done==False:
         pos_list[i][1]=pos_list[i][1]+vectorList[i]
         pygame.draw.rect(screen,white,[0,800-int(count),800,int(count)])
         pygame.draw.ellipse(screen,white,[countList[i][0]-30,int(800-int(countList[i][1])),(int(countList[i][1]*1.75)),int(countList[i][1])])
-        drawHouse()
+        
         if roofCount <=10:
             pygame.draw.line(screen,white,[270,650],[400,575],int(roofCount))
             pygame.draw.line(screen,white,[400,575],[530,650],int(roofCount))
@@ -169,12 +173,16 @@ while done==False:
                 roof=True
             if zero==True and i==len(pos_list)-1:
               roof=False
+    drawHouse()
     for i in range(0,len(lightPos)):
         if i%2==1:
             lightDraw(redLight,lightPos[i])
         else:
             lightDraw(greenLight,lightPos[i])
+    for i in range (0,len(smP)):
+        smoke(smP[i],smV[i],smSize[i])
     screen.blit(text,[275,100])
+    
     pygame.display.flip()
     for event in pygame.event.get(): ##checks the giant list of events 
         if event.type==pygame.QUIT: ##handles quit event
