@@ -12,12 +12,14 @@ blue=[0,0,255]
 white=[255,255,255]
 yellow=[255,255,0]
 purple=[255,0,255]
-lgreen=[102,209,114]
+lgreen=[184, 178, 178]
 brown=[104,94,49]
 dgreen=[29,180,30]
 gray=[153,153,153]
+mulberry = [163,47,63]
+silver = [207, 209, 212] #garland
 pi=math.pi
-font=pygame.font.Font (None, 50)
+font=pygame.font.Font (None, 55)
 text = font.render("Happy Holidays", True, red)
 pos_list=[]
 vectorList=[]
@@ -32,7 +34,7 @@ roofCount=0
 shedx=0
 shedy=0
 change=0
-changeDirec=0.5
+changeDirec=0.4
 roof=False 
 smokeList=[]
 for i in range(0,random.randint(15,20)):
@@ -56,13 +58,32 @@ def smoke(pos,rise,size):
     pygame.draw.circle(screen,gray,pos,size)
 lightPos=[]
 def drawHouse():
-    pygame.draw.rect(screen,lgreen,[300,650,200,150])
-    pygame.draw.rect(screen,black,[450,580,20,40])
-    pygame.draw.polygon(screen,brown,[[270,650],[400,575],[530,650]])
-    pygame.draw.rect(screen,brown,[425,720,50,80])
-    pygame.draw.rect(screen,yellow,[325,710,70,50])
-    pygame.draw.rect(screen,brown,[325,710,70,50],3)
-    pygame.draw.circle(screen,dgreen,[450,740],15,8)
+    pygame.draw.rect(screen,lgreen,[300,650,200,150]) ##walls
+    pygame.draw.rect(screen,brown,[450,580,20,40]) ##chimney
+    pygame.draw.polygon(screen,brown,[[270,650],[400,575],[530,650]]) ##Roof
+    pygame.draw.rect(screen,brown,[425,720,50,80]) ##door
+    pygame.draw.rect(screen,yellow,[325,710,70,50]) ## window
+    ## begin tree
+    pygame.draw.polygon(screen, dgreen, [[343, 760], [376, 760], [360, 720]]) ## draws the background
+    pygame.draw.arc(screen, silver, [354, 730, 14, 10], 3.14, 0, 2) #top garland
+    pygame.draw.arc(screen, silver, [349, 740, 22, 12], 3.14, 0, 2) #middle garland
+    pygame.draw.arc(screen, silver, [344, 748, 33, 14], 3.14, 0, 2) #bottom garland
+    #end tree
+    pygame.draw.rect(screen,brown,[325,710,70,50],3) ## window frame
+    pygame.draw.rect(screen,lgreen,[322,707,76,56],3) ## window frame
+    pygame.draw.circle(screen,dgreen,[450,740],15,8) ## wreath
+    #begin berries
+     #435->465, 725->755, exclclude 442->458, 732->748
+    pygame.draw.circle(screen, mulberry, [441, 731], 1, 0)
+    pygame.draw.circle(screen, mulberry, [440, 740], 1, 0)
+    pygame.draw.circle(screen, mulberry, [463, 739], 1, 0)
+    pygame.draw.circle(screen, mulberry, [458, 750], 1, 0)
+    pygame.draw.circle(screen, mulberry, [445, 749], 1, 0)
+    pygame.draw.circle(screen, mulberry, [459, 730], 1, 0)
+    pygame.draw.circle(screen, mulberry, [450, 753], 1, 0)
+    pygame.draw.circle(screen, mulberry, [450, 730], 1, 0)
+    #end berries
+    
 def drawSnow(posList,size):
     pygame.draw.circle(screen,white,posList,size)
 def snowFall():
