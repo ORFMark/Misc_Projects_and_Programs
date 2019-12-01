@@ -31,6 +31,7 @@ sizeList=[]
 countList=[]
 count=0
 roofCount=0
+prevRoofCount = roofCount
 shedx=0
 shedy=0
 change=0
@@ -96,8 +97,8 @@ def snowFall():
     roofCount+=0.003
     pos_list[i][1]=random.randint(-20,-10)
     sizeList[i]=random.randint(2,5)
-    vectorList[i]=random.randint(3,10)
-    wind[i]=random.randint(-2,2)
+    vectorList[i]=random.randint(2,4)
+    wind[i]=random.randint(-1,1)
 def lightDraw(color,pos):
     global change
     global changeDirec
@@ -134,13 +135,14 @@ screen=pygame.display.set_mode(size)
 screen.fill(blue)
 pygame.display.set_caption("Happy Holidays")
 for i in range (0,len(pos_list)):
-   vectorList.append(random.randint(3,7))
-   wind.append(random.randint(-1,1))
+   vectorList.append(random.randint(2,4))
+   wind.append(random.randint(-1,-1))
    sizeList.append(random.randint(2,5))
 clock=pygame.time.Clock()
 done=False
 zero=False
 while done==False:
+    prevRoofCount = roofCount;
     clock.tick(30)
     for i in eraser:
         pygame.draw.rect(screen, blue, i)
@@ -152,20 +154,20 @@ while done==False:
             snowFall()
         drawSnow(pos_list[i],sizeList[i])
         #pos_list[i][0]=pos_list[i][0]+wind[i]
-        pos_list[i][1]=pos_list[i][1]+vectorList[i]
+        pos_list[i][1] += vectorList[i]
         pygame.draw.rect(screen,white,[0,800-int(count),800,int(count)])
         pygame.draw.ellipse(screen,white,[countList[i][0]-30,int(800-int(countList[i][1])),(int(countList[i][1]*1.75)),int(countList[i][1])])
         
         if roofCount <=10:
-            pygame.draw.line(screen,white,[270,650],[400,575],int(roofCount))
-            pygame.draw.line(screen,white,[400,575],[530,650],int(roofCount))
+            eraser.append(pygame.draw.line(screen,white,[270,650],[400,575],int(roofCount)))
+            eraser.append(pygame.draw.line(screen,white,[400,575],[530,650],int(roofCount)))
         else:
             shedx=shedx+0.01354166666666666666666666666667
             shedy=shedy+0.0078125
-            pygame.draw.line(screen,white,[270,650],[400-(shedx),575+(shedy)],int(roofCount))
-            pygame.draw.line(screen,white,[400+(shedx),575+shedy],[530,650],int(roofCount))
-            pygame.draw.rect(screen,white,[270,650,(roofCount)/4,shedy*4])
-            pygame.draw.rect(screen,white,[530,650,(roofCount)/4,shedy*4])
+            eraser.append(pygame.draw.line(screen,white,[270,650],[400-(shedx),575+(shedy)],int(roofCount)))
+            eraser.append(pygame.draw.line(screen,white,[400+(shedx),575+shedy],[530,650],int(roofCount)))
+            eraser.append(pygame.draw.rect(screen,white,[270,650,(roofCount)/4,shedy*4]))
+            eraser.append(pygame.draw.rect(screen,white,[530,650,(roofCount)/4,shedy*4]))
             if shedy >=75:
                 roofCount=0
                 shedx=0
